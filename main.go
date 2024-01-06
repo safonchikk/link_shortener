@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"context"
+	"github.com/safonchikk/link_shortener/application"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	app := application.New()
+
+	err := app.Start(context.TODO())
 }
