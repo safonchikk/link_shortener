@@ -14,6 +14,7 @@ func loadRoutes() *chi.Mux {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-
+	router.Get("/{id}", MakeLong)
+	router.Post("/", MakeShort)
 	return router
 }
