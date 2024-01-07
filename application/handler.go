@@ -42,6 +42,7 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	link.Short = "localhost:3001/" + link.Short
 	res, err := json.Marshal(link)
 	if err != nil {
 		fmt.Println("failed to marshal:", err)
