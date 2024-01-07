@@ -3,18 +3,20 @@ package application
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"net/http"
 )
 
-func loadRoutes() *chi.Mux {
+func (a *App) loadRoutes() {
 	router := chi.NewRouter()
 
 	router.Use(middleware.Logger)
 
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-	})
-	router.Get("/{id}", MakeLong)
-	router.Post("/", MakeShort)
-	return router
+	handler := &Link{
+		Repo: &RedisRepo{
+			Client: a.rdb,
+		},
+	}
+
+	router.Get("/{id}", handler.MakeLong)
+	router.Post("/", handler.MakeShort)
+	a.router = router
 }
