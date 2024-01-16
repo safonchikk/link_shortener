@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
@@ -12,8 +13,13 @@ import (
 	"strconv"
 )
 
+type Repo interface {
+	Insert(ctx context.Context, link model.Link) error
+	FindByShort(ctx context.Context, short string) (model.Link, error)
+}
+
 type Link struct {
-	Repo *RedisRepo
+	Repository Repo
 }
 
 func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
@@ -37,7 +43,7 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 
 	link := model.Link{Short: short, Long: body.Long}
 
-	err = l.Repo.Insert(r.Context(), link)
+	err = l.Repository.Insert(r.Context(), link)
 	if err != nil {
 		fmt.Println("failed to insert:", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -65,7 +71,7 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 func (l *Link) MakeLong(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("make long called")
 	short := chi.URLParam(r, "id")
-	o, err := l.Repo.FindByShort(r.Context(), short)
+	o, err := l.Repository.FindByShort(r.Context(), short)
 	if err != nil {
 		fmt.Println("failed to find by short:", err)
 		w.WriteHeader(http.StatusInternalServerError)

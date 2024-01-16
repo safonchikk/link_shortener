@@ -3,7 +3,7 @@ package util
 import "github.com/spf13/viper"
 
 type Config struct {
-	RedisPort   string `mapstructure:"REDIS_PORT"`
+	RedisAddr   string `mapstructure:"REDIS_ADDR"`
 	AppPort     string `mapstructure:"APP_PORT"`
 	NginxPort   string `mapstructure:"NGINX_PORT"`
 	Address     string `mapstructure:"ADDRESS"`

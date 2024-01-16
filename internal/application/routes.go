@@ -11,7 +11,7 @@ func (a *App) loadRoutes() {
 	router.Use(middleware.Logger)
 
 	handler := &Link{
-		Repo: &RedisRepo{
+		Repository: &RedisRepo{
 			Client: a.rdb,
 		},
 	}

@@ -24,7 +24,7 @@ func New() *App {
 
 	app := &App{
 		rdb: redis.NewClient(&redis.Options{
-			Addr:     "redis:" + config.RedisPort,
+			Addr:     config.RedisAddr,
 			Password: "",
 			DB:       0,
 		}),
