@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:latest as buildbase
 
 WORKDIR /app
 
@@ -13,4 +13,4 @@ RUN go build -o main .
 
 EXPOSE 3000
 
-CMD ["./main"]
+CMD ["/app/main"]
