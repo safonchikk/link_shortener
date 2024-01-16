@@ -49,7 +49,7 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error loading app.env file" + err.Error())
 	}
 
-	link.Short = config.Address + ":" + config.AppPort + "/" + link.Short
+	link.Short = config.Address + ":" + config.NginxPort + "/" + link.Short
 	res, err := json.Marshal(link)
 	if err != nil {
 		fmt.Println("failed to marshal:", err)
