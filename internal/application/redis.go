@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/redis/go-redis/v9"
-	"link_shortener/model"
+	"link_shortener/internal/model"
+	"os"
+	"strconv"
+	"time"
 )
 
 type RedisRepo struct {
@@ -18,7 +21,8 @@ func (r *RedisRepo) Insert(ctx context.Context, link model.Link) error {
 		return fmt.Errorf("failed to make short link: %w", err)
 	}
 	key := link.Short
-	res := r.Client.SetNX(ctx, key, string(data), 0)
+	minuteNumber, _ := strconv.Atoi(os.Getenv("LINK_EXP_TIME"))
+	res := r.Client.SetNX(ctx, key, string(data), time.Duration(minuteNumber)*time.Minute)
 	if err := res.Err(); err != nil {
 		return fmt.Errorf("failed to set: %w", err)
 	}

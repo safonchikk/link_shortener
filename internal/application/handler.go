@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"hash/fnv"
-	"link_shortener/model"
+	"link_shortener/internal/model"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -42,7 +43,7 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	link.Short = "localhost:3000/" + link.Short
+	link.Short = os.Getenv("ADDRESS") + "/" + link.Short
 	res, err := json.Marshal(link)
 	if err != nil {
 		fmt.Println("failed to marshal:", err)

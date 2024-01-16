@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"net/http"
+	"os"
 	"time"
 )
 
@@ -16,7 +17,7 @@ type App struct {
 func New() *App {
 	app := &App{
 		rdb: redis.NewClient(&redis.Options{
-			Addr:     "redis:6379",
+			Addr:     "redis:" + os.Getenv("REDIS_PORT"),
 			Password: "",
 			DB:       0,
 		}),
@@ -29,7 +30,7 @@ func New() *App {
 
 func (a *App) Start(ctx context.Context) error {
 	server := &http.Server{
-		Addr:    ":3000",
+		Addr:    ":" + os.Getenv("APP_PORT"),
 		Handler: a.router,
 	}
 
