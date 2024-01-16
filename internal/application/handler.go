@@ -6,8 +6,9 @@ import (
 	"github.com/go-chi/chi/v5"
 	"hash/fnv"
 	"link_shortener/internal/model"
+	"link_shortener/util"
+	"log"
 	"net/http"
-	"os"
 	"strconv"
 )
 
@@ -43,7 +44,12 @@ func (l *Link) MakeShort(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	link.Short = os.Getenv("ADDRESS") + "/" + link.Short
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("Error loading app.env file" + err.Error())
+	}
+
+	link.Short = config.Address + ":" + config.AppPort + "/" + link.Short
 	res, err := json.Marshal(link)
 	if err != nil {
 		fmt.Println("failed to marshal:", err)

@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"github.com/redis/go-redis/v9"
 	"link_shortener/internal/model"
-	"os"
+	"link_shortener/util"
+	"log"
 	"strconv"
 	"time"
 )
@@ -21,8 +22,12 @@ func (r *RedisRepo) Insert(ctx context.Context, link model.Link) error {
 		return fmt.Errorf("failed to make short link: %w", err)
 	}
 	key := link.Short
-	minuteNumber, _ := strconv.Atoi(os.Getenv("LINK_EXP_TIME"))
-	res := r.Client.SetNX(ctx, key, string(data), time.Duration(minuteNumber)*time.Minute)
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("Error loading app.env file" + err.Error())
+	}
+	minuteNumber, _ := strconv.Atoi(config.LinkExpTime)
+	res := r.Client.Set(ctx, key, string(data), time.Duration(minuteNumber)*time.Minute)
 	if err := res.Err(); err != nil {
 		return fmt.Errorf("failed to set: %w", err)
 	}

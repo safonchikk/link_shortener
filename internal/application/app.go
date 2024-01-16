@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/redis/go-redis/v9"
+	"link_shortener/util"
+	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -15,9 +16,15 @@ type App struct {
 }
 
 func New() *App {
+
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("Error loading app.env file" + err.Error())
+	}
+
 	app := &App{
 		rdb: redis.NewClient(&redis.Options{
-			Addr:     "redis:" + os.Getenv("REDIS_PORT"),
+			Addr:     "redis:" + config.RedisPort,
 			Password: "",
 			DB:       0,
 		}),
@@ -29,12 +36,17 @@ func New() *App {
 }
 
 func (a *App) Start(ctx context.Context) error {
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatal("Error loading app.env file" + err.Error())
+	}
+
 	server := &http.Server{
-		Addr:    ":" + os.Getenv("APP_PORT"),
+		Addr:    ":" + config.AppPort,
 		Handler: a.router,
 	}
 
-	err := a.rdb.Ping(ctx).Err()
+	err = a.rdb.Ping(ctx).Err()
 	if err != nil {
 		return fmt.Errorf("failed to connect to redis: %w", err)
 	}
